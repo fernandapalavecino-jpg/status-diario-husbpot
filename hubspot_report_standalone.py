@@ -75,14 +75,22 @@ def count_leads(start_dt, end_dt, lifecycle_prop, source_digital, source_origina
         "limit": 1,
         "properties": ["hs_analytics_source"],
     }
-    try:
-        r = requests.post(f"{HUB_BASE}/crm/v3/objects/contacts/search",
-                          headers=HUB_HEADERS, json=payload, timeout=30)
-        if r.status_code == 200:
-            return r.json().get("total", 0)
-        print(f"[WARN] {source_digital}/{source_original}: HTTP {r.status_code}", file=sys.stderr)
-    except requests.RequestException as e:
-        print(f"[ERROR] {e}", file=sys.stderr)
+    import time
+    for attempt in range(3):
+        try:
+            r = requests.post(f"{HUB_BASE}/crm/v3/objects/contacts/search",
+                              headers=HUB_HEADERS, json=payload, timeout=30)
+            if r.status_code == 200:
+                return r.json().get("total", 0)
+            if r.status_code == 429:
+                wait = int(r.headers.get("Retry-After", 10))
+                print(f"[WARN] Rate limit, esperando {wait}s...", file=sys.stderr)
+                time.sleep(wait)
+                continue
+            print(f"[WARN] {source_digital}/{source_original}: HTTP {r.status_code}", file=sys.stderr)
+        except requests.RequestException as e:
+            print(f"[ERROR] {e}", file=sys.stderr)
+        break
     return 0
 
 
