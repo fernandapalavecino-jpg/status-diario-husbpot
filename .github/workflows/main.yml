@@ -1,0 +1,30 @@
+name: HubSpot Daily Leads Report
+
+on:
+  schedule:
+    - cron: "3 13 * * *"
+  workflow_dispatch:
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run HubSpot report
+        env:
+          HUBSPOT_TOKEN:    ${{ secrets.HUBSPOT_TOKEN }}
+          SLACK_BOT_TOKEN:  ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        run: python hubspot_report_standalone.py
