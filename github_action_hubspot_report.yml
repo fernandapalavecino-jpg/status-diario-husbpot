@@ -1,0 +1,40 @@
+# .github/workflows/hubspot_daily_report.yml
+# Copia este archivo a .github/workflows/ en tu repositorio.
+#
+# Secrets requeridos en tu repo (Settings → Secrets → Actions):
+#   HUBSPOT_TOKEN    → (tu token de HubSpot private app)
+#   SLACK_BOT_TOKEN  → xoxb-... (token de tu Slack App con scope chat:write)
+#   SLACK_CHANNEL_ID → U09JFUE8BA7 (DM a Fer) o el ID del canal que prefieras
+#
+# Horario: 9:03 AM hora Chile (UTC-4 en invierno = 13:03 UTC)
+
+name: HubSpot Daily Leads Report
+
+on:
+  schedule:
+    - cron: "3 13 * * *"   # 13:03 UTC = 09:03 AM Chile (UTC-4)
+  workflow_dispatch:        # permite ejecutar manualmente desde GitHub UI
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run HubSpot report
+        env:
+          HUBSPOT_TOKEN:    ${{ secrets.HUBSPOT_TOKEN }}
+          SLACK_BOT_TOKEN:  ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        run: python hubspot_report_standalone.py
