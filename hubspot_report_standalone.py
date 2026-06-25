@@ -18,7 +18,7 @@ from calendar import monthrange
 
 HUBSPOT_TOKEN    = os.environ.get("HUBSPOT_TOKEN",    "")
 SLACK_BOT_TOKEN  = os.environ.get("SLACK_BOT_TOKEN",  "")
-SLACK_CHANNEL_ID = os.environ.get("SLACK_CHANNEL_ID", "U09JFUE8BA7")
+SLACK_CHANNEL_ID = os.environ.get("SLACK_CHANNEL_ID", "G01PQR2CMK5")  # #growth
 
 HUB_BASE = "https://api.hubapi.com"
 if not HUBSPOT_TOKEN:
