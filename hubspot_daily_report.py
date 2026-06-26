@@ -9,8 +9,7 @@ from datetime import datetime, timedelta, date
 from collections import defaultdict
 
 # ── Config ────────────────────────────────────────────────────────────────────
-TOKEN     = os.environ.get("HUBSPOT_TOKEN",
-            "pat-na1-85f147f5-333e-418f-9dee-cd93a85eae69")
+TOKEN     = os.environ.get
 TEAM_B2C  = "3499247"  # Captación B2C (987 contacts in June, largest in API)
 
 GOALS = {
